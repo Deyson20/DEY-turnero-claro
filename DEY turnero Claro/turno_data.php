@@ -1,39 +1,32 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-
 // Datos de conexión
-$servername = "sql309.infinityfree.com"; // MySQL Hostname
-$username = "if0_38582766"; // MySQL Username
-$password = "BTVxj0Gwgtq2qB"; // MySQL Password
-$database = "if0_38582766_personas"; // MySQL Database Name
+$servername = "sql309.infinityfree.com";
+$username = "if0_38582766";
+$password = "BTVxj0Gwgtq2qB";
+$database = "if0_38582766_deprueba";
 
 $conn = new mysqli($servername, $username, $password, $database);
+
 if ($conn->connect_error) {
-    echo json_encode(["error" => "Conexión fallida"]);
-    exit();
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Obtener personas
-$sql = "SELECT * FROM persona ORDER BY id ASC";
+// Obtener el turno actual
+$sql = "SELECT turno_id FROM turno_actual WHERE id = 1";
 $result = $conn->query($sql);
-$personas = $result->fetch_all(MYSQLI_ASSOC);
-$total_personas = count($personas);
+$row = $result->fetch_assoc();
+$turno_actual = (int)$row["turno_id"];
 
-// Validar turno
-if (!isset($_SESSION["turno_actual"]) || $_SESSION["turno_actual"] >= $total_personas) {
-    $_SESSION["turno_actual"] = 0;
+// Obtener la persona correspondiente
+$sql = "SELECT * FROM persona ORDER BY id ASC LIMIT 1 OFFSET $turno_actual";
+$result = $conn->query($sql);
+$persona = $result->fetch_assoc();
+
+if ($persona) {
+    echo json_encode($persona);
+} else {
+    echo json_encode(["nombre" => "NO HAY TURNOS", "puesto" => ""]);
 }
-
-$persona_actual = $total_personas > 0 ? $personas[$_SESSION["turno_actual"]] : null;
 
 $conn->close();
-
-// Responder con JSON
-echo json_encode([
-    "nombre" => $persona_actual ? strtoupper($persona_actual["nombre"]) : "NO HAY TURNOS",
-    "puesto" => $persona_actual ? strtoupper($persona_actual["puesto"]) : "",
-    "turno_actual" => $_SESSION["turno_actual"],
-    "total_personas" => $total_personas
-]);
 ?>

@@ -5,7 +5,7 @@ session_start();
 $servername = "sql309.infinityfree.com"; // MySQL Hostname
 $username = "if0_38582766"; // MySQL Username
 $password = "BTVxj0Gwgtq2qB"; // MySQL Password
-$database = "if0_38582766_personas"; // MySQL Database Name
+$database = "if0_38582766_deprueba"; // MySQL Database Name
 
 // Crear conexión
 $conn = new mysqli($servername, $username, $password, $database);
