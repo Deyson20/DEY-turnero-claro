@@ -1,6 +1,9 @@
-name = "turnero-claro"
+name = "dey-turnero-claro"
 main = "src/worker.js"
 compatibility_date = "2026-10-23"
+
+[observability]
+enabled = true
 
 [assets]
 directory = "public"
