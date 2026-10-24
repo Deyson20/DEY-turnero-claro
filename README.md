@@ -44,6 +44,17 @@ npx wrangler deploy
 
 Wrangler solicitará el valor del secreto. No lo guardes en `wrangler.toml`, en el código ni en el repositorio.
 
+## Pantalla para Smart TV
+
+Abre `/smartv.html` en el navegador de la televisión. La pantalla muestra el turno actual y la lista de personas, y se actualiza automáticamente cada tres segundos. El turno que aparece allí es compartido con la página `/turno.html` desde D1.
+
+Al actualizar un despliegue existente, aplica también la nueva migración:
+
+```powershell
+npx wrangler d1 migrations apply turnero-claro --local
+npx wrangler d1 migrations apply turnero-claro --remote
+```
+
 ## Pasar las personas existentes de MySQL a D1
 
 La base MySQL anterior no se copia automáticamente. Exporta desde phpMyAdmin la tabla `persona` como CSV, incluyendo los encabezados `id`, `nombre` y `puesto`. Convierte el CSV al formato compatible con D1:

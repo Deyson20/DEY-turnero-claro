@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ed1c24" />
+    <title>Turnos - Claro</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/smartv.js" defer></script>
+  </head>
+  <body class="smart-tv-body">
+    <main class="smart-tv-page">
+      <header class="smart-tv-header">
+        <img src="/Logo-claro/logo-claro.png" alt="Claro" class="logo" />
+        <div>
+          <p class="smart-tv-eyebrow">ATENCIÓN AL CLIENTE</p>
+          <h1>TURNOS</h1>
+        </div>
+      </header>
+
+      <div class="smart-tv-layout">
+        <section class="smart-tv-current" aria-labelledby="current-heading">
+          <p id="current-heading" class="smart-tv-eyebrow">TURNO ACTUAL</p>
+          <div id="turn-name" class="smart-tv-name" aria-live="polite">Cargando...</div>
+          <div id="turn-position" class="smart-tv-position"></div>
+        </section>
+
+        <section class="smart-tv-queue" aria-labelledby="queue-heading">
+          <h2 id="queue-heading">TODOS LOS TURNOS</h2>
+          <ol id="turn-list" class="smart-tv-list"></ol>
+        </section>
+      </div>
+
+      <p id="status" class="smart-tv-status" role="status" aria-live="polite"></p>
+    </main>
+  </body>
+</html>

@@ -115,16 +115,25 @@ async function requireCsrf(request, env) {
 
 async function handleApi(request, env, url) {
   if (request.method === "GET" && url.pathname === "/api/session") {
-    const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM persona").first();
-    const total = Number(count.total);
+    const turn = await env.DB
+      .prepare("SELECT current_person_id AS currentId FROM turnero_state WHERE id = 1")
+      .first();
+    if (!turn) throw new Error("No se encontró el estado inicial del turnero.");
+
+    const currentId = turn.currentId === null ? null : Number(turn.currentId);
+    const position = currentId === null
+      ? { total: 0 }
+      : await env.DB.prepare("SELECT COUNT(*) AS total FROM persona WHERE id < ?")
+        .bind(currentId)
+        .first();
     const current = await readSession(request, env);
-    const index = total === 0 ? 0 : Math.min(current?.index ?? 0, total - 1);
+    const index = Number(position.total);
     if (current && index === current.index) {
-      return json({ csrf: current.csrf, index: current.index });
+      return json({ csrf: current.csrf, index, currentId });
     }
     const { session, cookie } = await createSession(request, env, index);
     return json(
-      { csrf: session.csrf, index: session.index },
+      { csrf: session.csrf, index: session.index, currentId },
       200,
       { "Set-Cookie": cookie },
     );
@@ -159,6 +168,9 @@ async function handleApi(request, env, url) {
       .prepare("INSERT INTO persona (nombre, puesto) VALUES (?, ?)")
       .bind(nombre, puesto)
       .run();
+    await env.DB.prepare(
+      "UPDATE turnero_state SET current_person_id = ? WHERE id = 1 AND current_person_id IS NULL",
+    ).bind(result.meta.last_row_id).run();
     return json({ id: result.meta.last_row_id, nombre, puesto }, 201);
   }
 
@@ -166,6 +178,7 @@ async function handleApi(request, env, url) {
     const csrf = await requireCsrf(request, env);
     if (csrf.response) return csrf.response;
     await env.DB.prepare("DELETE FROM persona").run();
+    await env.DB.prepare("UPDATE turnero_state SET current_person_id = NULL WHERE id = 1").run();
     return json({ message: "Todos los registros eliminados." });
   }
 
@@ -176,6 +189,25 @@ async function handleApi(request, env, url) {
 
     const id = Number(personMatch[1]);
     if (!Number.isSafeInteger(id) || id < 1) return json({ error: "ID inválido." }, 400);
+    const turn = await env.DB
+      .prepare("SELECT current_person_id AS currentId FROM turnero_state WHERE id = 1")
+      .first();
+    if (!turn) throw new Error("No se encontró el estado inicial del turnero.");
+
+    if (Number(turn.currentId) === id) {
+      const next = await env.DB
+        .prepare("SELECT id FROM persona WHERE id > ? ORDER BY id ASC LIMIT 1")
+        .bind(id)
+        .first();
+      const replacement = next || await env.DB
+        .prepare("SELECT id FROM persona WHERE id < ? ORDER BY id DESC LIMIT 1")
+        .bind(id)
+        .first();
+      await env.DB.prepare("UPDATE turnero_state SET current_person_id = ? WHERE id = 1")
+        .bind(replacement?.id ?? null)
+        .run();
+    }
+
     const result = await env.DB.prepare("DELETE FROM persona WHERE id = ?").bind(id).run();
     if (result.meta.changes === 0) return json({ error: "No se encontró la persona." }, 404);
     return json({ message: "Persona eliminada." });
@@ -198,15 +230,34 @@ async function handleApi(request, env, url) {
       return json({ error: "Dirección de turno inválida." }, 400);
     }
 
-    const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM persona").first();
-    const total = Number(count.total);
-    let index = total === 0 ? 0 : Math.min(csrf.session.index, total - 1);
-    if (input.direction === "next" && index < total - 1) index += 1;
-    if (input.direction === "previous" && index > 0) index -= 1;
+    const turn = await env.DB
+      .prepare("SELECT current_person_id AS currentId FROM turnero_state WHERE id = 1")
+      .first();
+    if (!turn) throw new Error("No se encontró el estado inicial del turnero.");
 
+    const comparison = input.direction === "next" ? ">" : "<";
+    const ordering = input.direction === "next" ? "ASC" : "DESC";
+    const target = turn.currentId === null
+      ? await env.DB.prepare("SELECT id FROM persona ORDER BY id ASC LIMIT 1").first()
+      : await env.DB
+        .prepare(`SELECT id FROM persona WHERE id ${comparison} ? ORDER BY id ${ordering} LIMIT 1`)
+        .bind(turn.currentId)
+        .first();
+    const currentId = target ? Number(target.id) : turn.currentId === null ? null : Number(turn.currentId);
+    if (target) {
+      await env.DB.prepare("UPDATE turnero_state SET current_person_id = ? WHERE id = 1")
+        .bind(currentId)
+        .run();
+    }
+    const position = currentId === null
+      ? { total: 0 }
+      : await env.DB.prepare("SELECT COUNT(*) AS total FROM persona WHERE id < ?")
+        .bind(currentId)
+        .first();
+    const index = Number(position.total);
     const { session, cookie } = await createSession(request, env, index, csrf.session.csrf);
     return json(
-      { index: session.index, csrf: session.csrf },
+      { index: session.index, currentId, csrf: session.csrf },
       200,
       { "Set-Cookie": cookie },
     );

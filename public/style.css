@@ -150,6 +150,165 @@ form button {
   margin: 20px 0;
 }
 
+.smart-tv-body {
+  min-height: 100vh;
+  margin: 0;
+  background: #f5f5f5;
+  text-align: left;
+}
+
+.smart-tv-page {
+  width: min(1500px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px 5vw;
+  box-sizing: border-box;
+}
+
+.smart-tv-header {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-bottom: 24px;
+  border-bottom: 5px solid #ed1c24;
+}
+
+.smart-tv-header .logo {
+  width: 100px;
+  margin: 0;
+}
+
+.smart-tv-header h1,
+.smart-tv-queue h2 {
+  margin: 0;
+}
+
+.smart-tv-header h1 {
+  color: #ed1c24;
+  font-size: clamp(32px, 5vw, 58px);
+}
+
+.smart-tv-eyebrow {
+  margin: 0 0 8px;
+  color: #555;
+  font-size: clamp(15px, 1.5vw, 22px);
+  font-weight: bold;
+  letter-spacing: 0.08em;
+}
+
+.smart-tv-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 28px;
+  padding-top: 30px;
+}
+
+.smart-tv-current,
+.smart-tv-queue {
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
+}
+
+.smart-tv-current {
+  display: flex;
+  min-height: 440px;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(28px, 5vw, 64px);
+  border-top: 10px solid #ed1c24;
+  box-sizing: border-box;
+}
+
+.smart-tv-name {
+  color: #222;
+  font-size: clamp(48px, 8vw, 112px);
+  font-weight: bold;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.smart-tv-position {
+  margin-top: 20px;
+  color: #555;
+  font-size: clamp(25px, 3vw, 42px);
+  overflow-wrap: anywhere;
+}
+
+.smart-tv-queue {
+  padding: 28px;
+}
+
+.smart-tv-queue h2 {
+  padding-bottom: 18px;
+  color: #ed1c24;
+  font-size: clamp(22px, 2vw, 30px);
+}
+
+.smart-tv-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.smart-tv-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-left: 5px solid transparent;
+  border-radius: 6px;
+  background: #f5f5f5;
+}
+
+.smart-tv-list-item.is-current {
+  border-left-color: #ed1c24;
+  background: #fff0f0;
+}
+
+.smart-tv-list-name,
+.smart-tv-list-position {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.smart-tv-list-name {
+  font-size: clamp(18px, 1.8vw, 25px);
+  font-weight: bold;
+}
+
+.smart-tv-list-position {
+  margin-top: 4px;
+  color: #666;
+  font-size: clamp(15px, 1.4vw, 19px);
+}
+
+.smart-tv-list-label {
+  flex: 0 0 auto;
+  color: #ed1c24;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.smart-tv-empty {
+  padding: 20px 0;
+  color: #666;
+  font-size: 20px;
+}
+
+.smart-tv-status {
+  min-height: 1.2em;
+  color: #666;
+  text-align: center;
+}
+
+.smart-tv-status.error {
+  color: #b00020;
+}
+
 @media (max-width: 520px) {
   body {
     margin: 24px 14px;
@@ -161,5 +320,29 @@ form button {
 
   .turn-name {
     font-size: 30px;
+  }
+}
+
+@media (max-width: 760px) {
+  .smart-tv-page {
+    padding: 24px 16px;
+  }
+
+  .smart-tv-header {
+    gap: 16px;
+  }
+
+  .smart-tv-header .logo {
+    width: 72px;
+  }
+
+  .smart-tv-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    padding-top: 18px;
+  }
+
+  .smart-tv-current {
+    min-height: 300px;
   }
 }
