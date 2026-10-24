@@ -26,13 +26,17 @@ function decodeBase64Url(value) {
 }
 
 async function signingKey(env) {
-  if (!env.SESSION_SECRET || env.SESSION_SECRET.length < 32) {
-    throw new Error("SESSION_SECRET debe tener al menos 32 caracteres.");
+  const secret = env.SESSION_SECRET;
+  if (typeof secret !== "string" || secret.length === 0) {
+    throw new Error("SESSION_SECRET no está configurado en el entorno activo.");
+  }
+  if (secret.length < 32) {
+    throw new Error(`SESSION_SECRET debe tener al menos 32 caracteres; se recibieron ${secret.length}.`);
   }
 
   return crypto.subtle.importKey(
     "raw",
-    textEncoder.encode(env.SESSION_SECRET),
+    textEncoder.encode(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign", "verify"],
@@ -218,7 +222,10 @@ export default {
       if (url.pathname.startsWith("/api/")) return await handleApi(request, env, url);
       return await env.ASSETS.fetch(request);
     } catch (error) {
-      console.error("Error procesando la solicitud:", error);
+      console.error(
+        "Error procesando la solicitud:",
+        error instanceof Error ? error.message : String(error),
+      );
       return json({ error: "Ocurrió un error interno. Revisa los registros del Worker." }, 500);
     }
   },
