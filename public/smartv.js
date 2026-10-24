@@ -12,8 +12,9 @@ async function getJson(url) {
 }
 
 function renderTurn(currentId, people) {
-  const current = people.find((person) => person.id === currentId);
-  turnCode.textContent = current ? `TURNO: A${String(current.id).padStart(3, "0")}` : "TURNO: ---";
+  const currentIndex = people.findIndex((person) => person.id === currentId);
+  const current = currentIndex === -1 ? null : people[currentIndex];
+  turnCode.textContent = current ? `TURNO: A${String(currentIndex + 1).padStart(3, "0")}` : "TURNO: ---";
   turnName.textContent = current ? current.nombre.toLocaleUpperCase("es") : "NO HAY TURNOS";
   turnPosition.textContent = current ? current.puesto.toLocaleUpperCase("es") : "";
 }

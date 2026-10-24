@@ -44,7 +44,7 @@ function showStatus(message, isError = false) {
 
 function renderTurn() {
   const person = people[currentIndex];
-  turnCode.textContent = person ? `TURNO: A${String(person.id).padStart(3, "0")}` : "TURNO: ---";
+  turnCode.textContent = person ? `TURNO: A${String(currentIndex + 1).padStart(3, "0")}` : "TURNO: ---";
   turnName.textContent = person ? person.nombre.toLocaleUpperCase("es") : "NO HAY TURNOS";
   turnPosition.textContent = person ? person.puesto.toLocaleUpperCase("es") : "";
   previousButton.disabled = !person || currentIndex === 0;
