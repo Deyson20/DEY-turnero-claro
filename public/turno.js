@@ -76,4 +76,20 @@ async function changeTurn(direction) {
 previousButton.addEventListener("click", () => changeTurn("previous"));
 nextButton.addEventListener("click", () => changeTurn("next"));
 
+document.addEventListener("keydown", (event) => {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  if (event.target instanceof HTMLElement && (
+    event.target.isContentEditable ||
+    ["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)
+  )) return;
+
+  if (event.key === "ArrowLeft" && !previousButton.disabled) {
+    event.preventDefault();
+    changeTurn("previous");
+  } else if (event.key === "ArrowRight" && !nextButton.disabled) {
+    event.preventDefault();
+    changeTurn("next");
+  }
+});
+
 loadTurn().catch((error) => showStatus(error.message, true));
