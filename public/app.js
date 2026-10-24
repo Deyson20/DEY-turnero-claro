@@ -4,8 +4,15 @@ const statusMessage = document.querySelector("#status");
 const deleteAllButton = document.querySelector("#delete-all");
 let csrfToken = "";
 
+async function ensureSession() {
+  const response = await fetch("/api/session");
+  const session = await response.json();
+  if (!response.ok) throw new Error(session.error || "No se pudo iniciar la sesión.");
+  csrfToken = session.csrf;
+}
+
 async function request(url, options = {}) {
-  const response = await fetch(url, {
+  const send = () => fetch(url, {
     ...options,
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),
@@ -13,7 +20,14 @@ async function request(url, options = {}) {
       ...options.headers,
     },
   });
-  const result = await response.json();
+
+  let response = await send();
+  let result = await response.json();
+  if (response.status === 403 && result.error === "Sesión inválida. Recarga la página e inténtalo de nuevo.") {
+    await ensureSession();
+    response = await send();
+    result = await response.json();
+  }
   if (!response.ok) throw new Error(result.error || "No se pudo completar la solicitud.");
   return result;
 }
@@ -61,8 +75,7 @@ async function loadPeople() {
 
 async function initialize() {
   try {
-    const session = await request("/api/session");
-    csrfToken = session.csrf;
+    await ensureSession();
     await loadPeople();
   } catch (error) {
     showStatus(error.message, true);
@@ -73,6 +86,7 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const data = new FormData(form);
   try {
+    await ensureSession();
     await request("/api/people", {
       method: "POST",
       body: JSON.stringify({
@@ -91,6 +105,7 @@ form.addEventListener("submit", async (event) => {
 deleteAllButton.addEventListener("click", async () => {
   if (!confirm("¿Estás seguro de que deseas eliminar todos los registros?")) return;
   try {
+    await ensureSession();
     await request("/api/people", { method: "DELETE" });
     await loadPeople();
     showStatus("Todos los registros eliminados.");

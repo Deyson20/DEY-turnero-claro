@@ -7,8 +7,16 @@ let csrfToken = "";
 let currentIndex = 0;
 let people = [];
 
+async function ensureSession() {
+  const response = await fetch("/api/session");
+  const session = await response.json();
+  if (!response.ok) throw new Error(session.error || "No se pudo iniciar la sesión.");
+  csrfToken = session.csrf;
+  return session;
+}
+
 async function request(url, options = {}) {
-  const response = await fetch(url, {
+  const send = () => fetch(url, {
     ...options,
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),
@@ -16,7 +24,14 @@ async function request(url, options = {}) {
       ...options.headers,
     },
   });
-  const result = await response.json();
+
+  let response = await send();
+  let result = await response.json();
+  if (response.status === 403 && result.error === "Sesión inválida. Recarga la página e inténtalo de nuevo.") {
+    await ensureSession();
+    response = await send();
+    result = await response.json();
+  }
   if (!response.ok) throw new Error(result.error || "No se pudo completar la solicitud.");
   return result;
 }
@@ -35,11 +50,7 @@ function renderTurn() {
 }
 
 async function loadTurn() {
-  const [session, currentPeople] = await Promise.all([
-    request("/api/session"),
-    request("/api/people"),
-  ]);
-  csrfToken = session.csrf;
+  const [session, currentPeople] = await Promise.all([ensureSession(), request("/api/people")]);
   currentIndex = session.index;
   people = currentPeople;
   renderTurn();
@@ -47,6 +58,7 @@ async function loadTurn() {
 
 async function changeTurn(direction) {
   try {
+    await ensureSession();
     const result = await request("/api/turn", {
       method: "POST",
       body: JSON.stringify({ direction }),
