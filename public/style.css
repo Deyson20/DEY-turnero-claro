@@ -112,109 +112,97 @@ form button {
   color: #b00020;
 }
 
-.turn-page {
-  margin-top: 50px;
-}
-
-.turn-card {
-  display: inline-block;
-  width: min(400px, calc(100% - 40px));
-  padding: 30px;
-  border-radius: 10px;
-  background: #f8f9fa;
-  box-shadow: 0 4px 10px rgb(0 0 0 / 20%);
-  box-sizing: border-box;
-}
-
-.turn-title {
-  margin-bottom: 15px;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.turn-name {
-  color: #333;
-  font-size: 36px;
-  font-weight: bold;
-  overflow-wrap: anywhere;
-}
-
-.turn-position {
-  margin-top: 10px;
-  color: #666;
-  font-size: 22px;
-  overflow-wrap: anywhere;
-}
-
-.turn-actions {
-  margin: 20px 0;
-}
-
-.smart-tv-body {
+.turn-display-body {
   display: grid;
   min-height: 100vh;
   min-height: 100svh;
   margin: 0;
-  padding: 16px;
+  padding: clamp(12px, 4vw, 40px);
   place-items: center;
-  background: #f9f9f9;
+  background: linear-gradient(120deg, #d9f7f7 0%, #b9ddf8 100%);
   box-sizing: border-box;
 }
 
-.smart-tv-page {
+.turn-display-page {
   display: grid;
   width: 100%;
-  min-height: calc(100vh - 32px);
-  min-height: calc(100svh - 32px);
+  min-height: calc(100vh - 8vw);
+  min-height: calc(100svh - 8vw);
   place-items: center;
 }
 
-.smart-tv-card {
-  width: min(720px, 100%);
-  padding: clamp(24px, 5vw, 48px);
-  border-radius: 12px;
-  background: #f8f9fa;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+.turn-display-card {
+  width: min(1100px, 62vw);
+  padding: clamp(28px, 5vw, 50px) clamp(20px, 6vw, 64px);
+  border-radius: clamp(18px, 2vw, 26px);
+  background: #fff;
+  box-shadow: 0 12px 26px rgb(0 0 0 / 20%);
   box-sizing: border-box;
   text-align: center;
 }
 
-.smart-tv-logo {
+.turn-display-logo {
   display: block;
-  width: clamp(88px, 15vw, 140px);
+  width: clamp(90px, 9vw, 140px);
   height: auto;
-  margin: 0 auto clamp(16px, 3vh, 28px);
+  margin: 0 auto clamp(24px, 3.2vw, 42px);
 }
 
-.smart-tv-title {
-  margin: 0 0 clamp(14px, 3vh, 24px);
-  font-size: clamp(22px, 3vw, 32px);
-}
-
-.smart-tv-name {
+.turn-display-code {
+  margin: 0 0 clamp(12px, 1.5vw, 22px);
   color: #222;
-  font-size: clamp(34px, 7vw, 76px);
+  font-size: clamp(24px, 2.5vw, 32px);
+  font-weight: bold;
+}
+
+.turn-display-name {
+  color: #e5282d;
+  font-size: clamp(32px, 4vw, 48px);
   font-weight: bold;
   line-height: 1.1;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
-.smart-tv-position {
-  margin-top: clamp(10px, 2vh, 18px);
+.turn-display-position {
+  margin-top: clamp(10px, 1.4vw, 18px);
   color: #555;
-  font-size: clamp(18px, 3vw, 28px);
-  overflow-wrap: break-word;
+  font-size: clamp(20px, 2.4vw, 28px);
+  overflow-wrap: anywhere;
 }
 
-.smart-tv-status {
+.turn-display-status {
   min-height: 0;
-  margin: 12px 0 0;
+  margin: clamp(8px, 1.2vw, 16px) 0 0;
   color: #666;
   text-align: center;
 }
 
-.smart-tv-status.error {
+.turn-display-status.error {
   color: #b00020;
+}
+
+.turn-display-controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(12px, 1.6vw, 22px);
+  margin-top: clamp(22px, 2.2vw, 32px);
+}
+
+.turn-nav-button {
+  min-width: 128px;
+  border-radius: 999px;
+  background: #21a447;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 15%);
+}
+
+.turn-nav-button:hover:not(:disabled) {
+  background: #168638;
+}
+
+.turn-nav-button:disabled {
+  background: #ccc;
+  color: #777;
 }
 
 @media (max-width: 520px) {
@@ -226,51 +214,65 @@ form button {
     align-items: flex-start;
   }
 
-  .turn-name {
-    font-size: 30px;
+  .turn-display-body {
+    padding: 12px;
+  }
+
+  .turn-display-page {
+    min-height: calc(100vh - 24px);
+    min-height: calc(100svh - 24px);
+  }
+
+  .turn-display-card {
+    padding: 28px 20px;
+  }
+
+  .turn-display-logo {
+    width: clamp(84px, 24vw, 112px);
+    margin-bottom: 22px;
+  }
+
+  .turn-display-name {
+    font-size: clamp(30px, 8vw, 40px);
+  }
+
+  .turn-display-controls {
+    gap: 10px;
+  }
+
+  .turn-nav-button {
+    min-width: 0;
+    padding: 10px 13px;
+    font-size: 15px;
   }
 }
 
-@media (max-width: 480px) {
-  .smart-tv-body {
-    padding: 10px;
-  }
-
-  .smart-tv-page {
-    min-height: calc(100vh - 20px);
-    min-height: calc(100svh - 20px);
-  }
-
-  .smart-tv-card {
-    padding: 24px 18px;
-  }
-
-  .smart-tv-logo {
-    width: clamp(76px, 22vw, 100px);
-    margin-bottom: 14px;
-  }
-
-  .smart-tv-name {
-    font-size: clamp(30px, 9vw, 44px);
+@media (max-width: 760px) {
+  .turn-display-card {
+    width: 100%;
   }
 }
 
 @media (max-height: 480px) {
-  .smart-tv-card {
-    padding-top: 16px;
-    padding-bottom: 16px;
+  .turn-display-card {
+    padding-top: 18px;
+    padding-bottom: 18px;
   }
 
-  .smart-tv-logo {
-    width: clamp(60px, 16vh, 88px);
+  .turn-display-logo {
+    width: clamp(64px, 16vh, 88px);
+    margin-bottom: 12px;
+  }
+
+  .turn-display-code {
     margin-bottom: 8px;
   }
 
-  .smart-tv-title {
-    margin-bottom: 10px;
+  .turn-display-position {
+    margin-top: 8px;
   }
 
-  .smart-tv-position {
-    margin-top: 8px;
+  .turn-display-controls {
+    margin-top: 14px;
   }
 }

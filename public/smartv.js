@@ -1,4 +1,5 @@
 const turnName = document.querySelector("#turn-name");
+const turnCode = document.querySelector("#current-heading");
 const turnPosition = document.querySelector("#turn-position");
 const statusMessage = document.querySelector("#status");
 let isRefreshing = false;
@@ -12,6 +13,7 @@ async function getJson(url) {
 
 function renderTurn(currentId, people) {
   const current = people.find((person) => person.id === currentId);
+  turnCode.textContent = current ? `TURNO: A${String(current.id).padStart(3, "0")}` : "TURNO: ---";
   turnName.textContent = current ? current.nombre.toLocaleUpperCase("es") : "NO HAY TURNOS";
   turnPosition.textContent = current ? current.puesto.toLocaleUpperCase("es") : "";
 }

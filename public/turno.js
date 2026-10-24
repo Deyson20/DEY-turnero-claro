@@ -1,4 +1,5 @@
 const turnName = document.querySelector("#turn-name");
+const turnCode = document.querySelector("#turn-code");
 const turnPosition = document.querySelector("#turn-position");
 const statusMessage = document.querySelector("#status");
 const previousButton = document.querySelector("#previous");
@@ -43,6 +44,7 @@ function showStatus(message, isError = false) {
 
 function renderTurn() {
   const person = people[currentIndex];
+  turnCode.textContent = person ? `TURNO: A${String(person.id).padStart(3, "0")}` : "TURNO: ---";
   turnName.textContent = person ? person.nombre.toLocaleUpperCase("es") : "NO HAY TURNOS";
   turnPosition.textContent = person ? person.puesto.toLocaleUpperCase("es") : "";
   previousButton.disabled = !person || currentIndex === 0;

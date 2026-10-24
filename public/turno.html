@@ -7,21 +7,18 @@
     <link rel="stylesheet" href="/style.css" />
     <script src="/turno.js" defer></script>
   </head>
-  <body>
-    <main class="turn-page">
-      <section class="turn-card">
-        <img src="/Logo-claro/logo-claro.png" alt="Claro" class="logo" />
-        <div class="turn-title">TURNO ACTUAL</div>
-        <div id="turn-name" class="turn-name">Cargando...</div>
-        <div id="turn-position" class="turn-position"></div>
-        <p id="status" class="status" role="status" aria-live="polite"></p>
-        <div class="actions turn-actions">
-          <button id="previous" type="button">⬅ Anterior</button>
-          <button id="next" type="button">Siguiente ➡</button>
+  <body class="turn-display-body">
+    <main class="turn-display-page">
+      <section class="turn-display-card">
+        <img src="/Logo-claro/logo-claro.png" alt="Claro" class="turn-display-logo" />
+        <div id="turn-code" class="turn-display-code">TURNO: ---</div>
+        <div id="turn-name" class="turn-display-name" aria-live="polite">Cargando...</div>
+        <div id="turn-position" class="turn-display-position"></div>
+        <p id="status" class="turn-display-status" role="status" aria-live="polite"></p>
+        <div class="turn-display-controls">
+          <button id="previous" class="turn-nav-button" type="button">⬅ Anterior</button>
+          <button id="next" class="turn-nav-button" type="button">Siguiente ➡</button>
         </div>
-        <a href="/">Volver a gestión</a>
-        <span aria-hidden="true">|</span>
-        <a href="/smartv.html">Ver pantalla Smart TV</a>
       </section>
     </main>
   </body>
