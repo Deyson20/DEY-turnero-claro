@@ -48,6 +48,10 @@ Wrangler solicitará el valor de cada secreto. Usa un usuario propio y una contr
 
 La gestión de personas (`/`) y la administración de turnos (`/turno.html`) requieren iniciar sesión. La pantalla `/smartv.html` permanece pública y solo recibe los datos del turno actual. La sesión administrativa caduca después de ocho horas.
 
+## Instalar como aplicación
+
+La aplicación incluye un manifiesto y el logo de Claro como icono del navegador y de instalación. En un navegador compatible, usa la opción **Instalar aplicación** o **Añadir a pantalla de inicio** para crear un acceso directo con el icono.
+
 ## Pantalla para Smart TV
 
 Abre `/smartv.html` en el navegador de la televisión. La pantalla pública muestra el turno actual y se actualiza automáticamente cada tres segundos. El turno que aparece allí es compartido con la página `/turno.html` desde D1.

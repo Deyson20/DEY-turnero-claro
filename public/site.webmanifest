@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "Turnero Claro",
+  "short_name": "Turnero Claro",
+  "description": "Gestión y consulta de turnos de Claro.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9f9f9",
+  "theme_color": "#ed1c24",
+  "icons": [
+    {
+      "src": "/Logo-claro/logo-claro.png",
+      "sizes": "4096x4096",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
