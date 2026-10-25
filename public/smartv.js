@@ -11,10 +11,8 @@ async function getJson(url) {
   return result;
 }
 
-function renderTurn(currentId, people) {
-  const currentIndex = people.findIndex((person) => person.id === currentId);
-  const current = currentIndex === -1 ? null : people[currentIndex];
-  turnCode.textContent = current ? `TURNO: A${String(currentIndex + 1).padStart(3, "0")}` : "TURNO: ---";
+function renderTurn(current) {
+  turnCode.textContent = current ? `TURNO: A${String(current.number).padStart(3, "0")}` : "TURNO: ---";
   turnName.textContent = current ? current.nombre.toLocaleUpperCase("es") : "NO HAY TURNOS";
   turnPosition.textContent = current ? current.puesto.toLocaleUpperCase("es") : "";
 }
@@ -23,8 +21,8 @@ async function refreshDisplay() {
   if (isRefreshing) return;
   isRefreshing = true;
   try {
-    const [session, people] = await Promise.all([getJson("/api/session"), getJson("/api/people")]);
-    renderTurn(session.currentId, people);
+    const result = await getJson("/api/current-turn");
+    renderTurn(result.current);
     statusMessage.textContent = "";
     statusMessage.classList.remove("error");
   } catch (error) {

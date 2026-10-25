@@ -112,6 +112,54 @@ form button {
   color: #b00020;
 }
 
+.login-body {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+  padding: 20px;
+  place-items: center;
+  box-sizing: border-box;
+}
+
+.login-card {
+  width: min(440px, 100%);
+  padding: 28px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 12%);
+  box-sizing: border-box;
+}
+
+.login-card h1 {
+  margin: 0 0 22px;
+}
+
+.login-card form {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.login-card input {
+  margin-bottom: 18px;
+}
+
+.login-card .status {
+  color: #b00020;
+}
+
+.turn-logout {
+  margin-top: 18px;
+  background: #666;
+}
+
 .turn-display-body {
   display: grid;
   min-height: 100vh;

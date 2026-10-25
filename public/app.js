@@ -17,12 +17,17 @@ async function request(url, options = {}) {
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),
       ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+      ...window.adminAuth.headers(),
       ...options.headers,
     },
   });
 
   let response = await send();
   let result = await response.json();
+  if (response.status === 401) {
+    window.adminAuth.redirectToLogin();
+    throw new Error("La sesión terminó. Inicia sesión de nuevo.");
+  }
   if (response.status === 403 && result.error === "Sesión inválida. Recarga la página e inténtalo de nuevo.") {
     await ensureSession();
     response = await send();
@@ -75,6 +80,7 @@ async function loadPeople() {
 
 async function initialize() {
   try {
+    await window.adminAuth.initialize();
     await ensureSession();
     await loadPeople();
   } catch (error) {
@@ -86,6 +92,7 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const data = new FormData(form);
   try {
+    await window.adminAuth.initialize();
     await ensureSession();
     await request("/api/people", {
       method: "POST",
@@ -105,10 +112,19 @@ form.addEventListener("submit", async (event) => {
 deleteAllButton.addEventListener("click", async () => {
   if (!confirm("¿Estás seguro de que deseas eliminar todos los registros?")) return;
   try {
+    await window.adminAuth.initialize();
     await ensureSession();
     await request("/api/people", { method: "DELETE" });
     await loadPeople();
     showStatus("Todos los registros eliminados.");
+  } catch (error) {
+    showStatus(error.message, true);
+  }
+});
+
+document.querySelector("#logout").addEventListener("click", async () => {
+  try {
+    await window.adminAuth.logout();
   } catch (error) {
     showStatus(error.message, true);
   }

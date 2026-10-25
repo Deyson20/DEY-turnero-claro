@@ -22,12 +22,17 @@ async function request(url, options = {}) {
     headers: {
       ...(options.body ? { "Content-Type": "application/json" } : {}),
       ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+      ...window.adminAuth.headers(),
       ...options.headers,
     },
   });
 
   let response = await send();
   let result = await response.json();
+  if (response.status === 401) {
+    window.adminAuth.redirectToLogin();
+    throw new Error("La sesión terminó. Inicia sesión de nuevo.");
+  }
   if (response.status === 403 && result.error === "Sesión inválida. Recarga la página e inténtalo de nuevo.") {
     await ensureSession();
     response = await send();
@@ -52,6 +57,7 @@ function renderTurn() {
 }
 
 async function loadTurn() {
+  await window.adminAuth.initialize();
   const [session, currentPeople] = await Promise.all([ensureSession(), request("/api/people")]);
   currentIndex = session.index;
   people = currentPeople;
@@ -60,6 +66,7 @@ async function loadTurn() {
 
 async function changeTurn(direction) {
   try {
+    await window.adminAuth.initialize();
     await ensureSession();
     const result = await request("/api/turn", {
       method: "POST",
@@ -77,6 +84,14 @@ async function changeTurn(direction) {
 
 previousButton.addEventListener("click", () => changeTurn("previous"));
 nextButton.addEventListener("click", () => changeTurn("next"));
+
+document.querySelector("#logout").addEventListener("click", async () => {
+  try {
+    await window.adminAuth.logout();
+  } catch (error) {
+    showStatus(error.message, true);
+  }
+});
 
 document.addEventListener("keydown", (event) => {
   if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
